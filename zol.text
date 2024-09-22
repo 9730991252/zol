@@ -44,8 +44,6 @@ pip install django
  
 pip install gunicorn
 
-pip install requests
-
 *********** Deactivate Virtualenv *****
 
 deactivate
@@ -92,7 +90,7 @@ ExecStart=/root/zol/venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/zol.com.gunicorn.sock \
-          zol.asgi:application
+          zol.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
