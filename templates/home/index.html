@@ -3,13 +3,19 @@
 {% endblock head %}
 {% block content %}
 
-<form method="POST">{% csrf_token %}
-<div class="">
-    <input type="text" name="room_code" placeholder="room_code">
-    <input type="text" name="user_name" placeholder="user name">
-    <button type="submit" name="enter">enter</button>
-</div>
-</form>
+
+<script>
+    var ws =  new WebSocket('ws://127.0.0.1:8000/ws/sc/')
+    ws.onopen = function(){
+        console.log('Websocket connection open...')
+    }
+    ws.onmessage = function(event){
+        console.log('message Received from server', event)
+    }
+    ws.onclose = function(event){
+        console.error('Websocket connection closed unexpectedly', event)
+    };
+</script>
 
  
 {% endblock content %}
