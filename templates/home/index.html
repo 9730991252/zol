@@ -10,14 +10,23 @@
     var ws =  new WebSocket('ws://127.0.0.1:8000/ws/sc/')
     ws.onopen = function(){
         console.log('Websocket connection open...')
-        ws.send('Hi from client')
     }
     ws.onmessage = function(event){
-        console.log('message Received from server', event)
+        const data = JSON.parse(event.data)
+        document.querySelector('#chat-log').value += (data.msg + '\n')
     }
     ws.onclose = function(event){
         console.error('Websocket connection closed unexpectedly', event)
     };
+
+    document.getElementById('chat-message-submit').onclick = function(event){
+        const messageInputDom = document.getElementById('chat-message-input')
+        const message = messageInputDom.value 
+        ws.send(JSON.stringify({
+            'msg':message
+        }))
+        messageInputDom.value = ''
+    }
 </script>
 
  

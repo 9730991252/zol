@@ -1,6 +1,6 @@
 from channels.consumer import SyncConsumer, AsyncConsumer
 from channels.exceptions import StopConsumer
-from asgiref.sync import async_to_sync
+from asgiref.sync import AsyncToSync, async_to_sync
 
 
 class MySyncConsumer(SyncConsumer):
@@ -18,6 +18,20 @@ class MySyncConsumer(SyncConsumer):
 
     def websocket_receive(self, event):
         print('message Recived from Client..', event)
+        async_to_sync(self.channel_layer.group_send)(
+            'programmers', 
+            {
+                'type': 'chat.message',
+                'message' :event['text']
+            })
+        
+    def chat_message(self, event):
+        print('Event...', event)
+        print('Actual Data...', event['message'])
+        self.send({
+            'type' : 'websocket.send',
+            'text' : event['message']
+        })
 
     def websocket_disconnect(self, event):
         print('websocket Disconnected...', event)
