@@ -11,7 +11,7 @@
 </div>
 
 <script>
-    var url = 'https://chat.narayaniorder.com/chat/{{room_code}}'
+    var url = 'ws://localhost:8000/chat/{{room_code}}'
     var sender = '{{user}}'
     var websocket = new WebSocket(url)
     websocket.onopen = function(e){

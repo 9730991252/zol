@@ -2,6 +2,7 @@
 
 _______________________________________
 
+cd zol
 git pull
 sudo systemctl daemon-reload
 sudo systemctl restart zol.com.gunicorn
