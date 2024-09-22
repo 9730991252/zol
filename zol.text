@@ -1,0 +1,176 @@
+142.93.213.54
+
+_______________________________________
+
+git pull
+sudo systemctl daemon-reload
+sudo systemctl restart zol.com.gunicorn
+exit
+
+_______________________________________
+
+
+git clone https://github.com/9730991252/zol.git
+
+_______________________________________
+********** Create Virtual env *****
+
+virtualenv venv
+
+********** Activate Virtual env ****
+
+source venv/bin/activate
+
+****************migrations******
+python3 manage.py makemigrations
+
+*********** migrate ********
+
+python3 manage.py migrate
+
+*******************/channels/***********************
+
+pip install channels==3.0.5
+
+************/channels-redis/***************
+
+pip install channels-redis
+
+***** install django ******
+
+pip install django
+
+******** Install Gunicorn ******
+ 
+pip install gunicorn
+
+pip install requests
+
+*********** Deactivate Virtualenv *****
+
+deactivate
+
+
+************ Create System Socket File for Gunicorn *******
+
+Example:- sudo nano /etc/systemd/system/crenta.in.gunicorn.socket
+
+cd  /etc/systemd/system/
+
+sudo nano zol.com.gunicorn.socket
+
+
+
+[Unit]
+Description=zol.com.gunicorn socket
+
+[Socket]
+ListenStream=/run/zol.com.gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+
+************** Create System Service File for Gunicorn ******
+Syntax:- sudo nano /etc/systemd/system/your_domain.gunicorn.service
+Example:- sudo nano /etc/systemd/system/narayaniorder.com.gunicorn.service
+
+cd  /etc/systemd/system/
+
+sudo nano zol.com.gunicorn.service
+
+
+[Unit]
+Description=zol.com.gunicorn daemon
+Requires=zol.com.gunicorn.socket
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/zol
+ExecStart=/root/zol/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/zol.com.gunicorn.sock \
+          zol.asgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+
+----------------------------------------------------------------
+sudo systemctl start zol.com.gunicorn.socket
+
+sudo systemctl start zol.com.gunicorn.service
+
+-----------------------------------------------------------------
+
+sudo systemctl enable zol.com.gunicorn.socket
+
+sudo systemctl enable zol.com.gunicorn.service
+
+-----------------------------------------------------------------------
+
+sudo systemctl status zol.com.gunicorn.socket
+
+sudo systemctl status zol.com.gunicorn.service
+
+-------------------------------------------
+
+sudo systemctl daemon-reload
+sudo systemctl restart zol.com.gunicorn
+
+--------------------------------
+
+****************** Create Virtual Host File ******
+Syntax:- sudo nano /etc/nginx/sites-available/your_domain
+Example:- sudo nano /etc/nginx/sites-available/crenta.in
+
+
+cd /etc/nginx/sites-available
+
+sudo nano zol.com
+
+server{
+    listen 80;
+    listen [::]:80;
+
+    server_name chat.narayaniorder.com www.chat.narayaniorder.com;
+    client_max_body_size 500M;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://unix:/run/zol.com.gunicorn.sock;
+    }
+
+    
+}
+
+-----------------------------------------------------
+
+
+########## Enable Virtual Host or Create Symbolic Link of Virtual Host File ########
+
+sudo ln -s /etc/nginx/sites-available/zol.com /etc/nginx/sites-enabled/zol.com
+
+%%%%%%%%%%%%%%%%%%%%% Check Configuration is Correct or Not %%%%%
+
+sudo nginx -t
+
+%%%%%%%%%%%% Restart Nginx %%%%%%%%%
+
+sudo service nginx restart
+
+********** restart ******
+
+sudo systemctl daemon-reload
+sudo systemctl restart zol.com.gunicorn
+
+--------------------------------------- ssl ------------------
+
+sudo certbot --nginx

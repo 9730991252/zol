@@ -1,0 +1,15 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+
+<form method="POST">{% csrf_token %}
+<div class="">
+    <input type="text" name="room_code" placeholder="room_code">
+    <input type="text" name="user_name" placeholder="user name">
+    <button type="submit" name="enter">enter</button>
+</div>
+</form>
+
+ 
+{% endblock content %}
