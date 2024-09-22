@@ -2,10 +2,11 @@
 {% block head %}
 {% endblock head %}
 {% block content %}
-<textarea id="chat-log" cols="50" rows="20"></textarea><br>
-<input type="text" id="chat-message-input" size="45"><br>
-<input type="button" value="Send" id="chat-message-submit">
-
+<div class="container">
+    <textarea id="chat-log" cols="20" rows="20" required></textarea><br>
+    <input type="text" id="chat-message-input" size="20"><br>
+    <input type="button" value="Send" id="chat-message-submit">
+</div>
 <script>
     var ws =  new WebSocket('ws://127.0.0.1:8000/ws/sc/')
     ws.onopen = function(){
